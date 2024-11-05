@@ -16,7 +16,9 @@ public class UserController {
 
     @GetMapping(value = "/")
     public String showUsers(ModelMap model, HttpServletRequest request) {
+
         List<User> users = userDAO.getAllUsers();
+
         model.addAttribute("users", users);
         model.addAttribute("size", users.size());
         return "user";
