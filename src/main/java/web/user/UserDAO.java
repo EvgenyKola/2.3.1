@@ -1,26 +1,21 @@
 package web.user;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.criteria.CriteriaQuery;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaQuery;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class UserDAO {
 
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("user");
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    public static EntityManager getEntityManager() {
-        return emf.createEntityManager();
-    }
-
-    public static List<User> getAllUsers() {
-        EntityManager em = getEntityManager();
-        CriteriaQuery<User> criteria = em.getCriteriaBuilder().createQuery(User.class);
+    public List<User> getAllUsers() {
+        CriteriaQuery<User> criteria = entityManager.getCriteriaBuilder().createQuery(User.class);
         criteria.select(criteria.from(User.class));
-        List<User> users = em.createQuery(criteria).getResultList();
-        em.close();
-        return users;
+        return entityManager.createQuery(criteria).getResultList();
     }
 }

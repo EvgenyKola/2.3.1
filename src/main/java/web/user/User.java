@@ -1,11 +1,9 @@
 package web.user;
 
-import jakarta.persistence.*;
-import org.springframework.stereotype.Component;
+import javax.persistence.*;
 
 @Entity
-@Table (name="Users")
-@Component
+@Table(name = "Users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +19,6 @@ public class User {
     private Byte age;
 
     public User() {
-
     }
 
     public User(String name, String lastName, Byte age) {
@@ -63,8 +60,7 @@ public class User {
     }
 
     @Override
-    public String toString () {
-        return name+" "+lastName+" "+age;
+    public String toString() {
+        return name + " " + lastName + " " + age;
     }
-
 }
