@@ -2,6 +2,7 @@ package web.user;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -11,6 +12,7 @@ public class UserDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+
 
     @Transactional
     public List<User> getAllUsers() {
