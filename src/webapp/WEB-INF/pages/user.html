@@ -25,11 +25,13 @@
         <td th:text="${user.name}"></td>
         <td th:text="${user.lastName}"></td>
         <td th:text="${user.age}"></td>
+        <td><a th:href="@{/edit(id=${user.id})}">Edit</a></td>
     </tr>
     </tbody>
 </table>
 
-<p th:text="${size}"><p>
+
+<p th:text="${message}"></p>
 
 </body>
 </html></title>

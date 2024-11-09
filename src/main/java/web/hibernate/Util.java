@@ -1,43 +1,61 @@
 package web.hibernate;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import java.util.HashMap;
-import java.util.Map;
-
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
+@ComponentScan(basePackages = "web")
+@EnableTransactionManagement
+@PropertySource(value = "classpath:db.properties")
 public class Util {
+    private Environment environment;
 
-    private static EntityManagerFactory entityManagerFactory;
-
-    public static EntityManagerFactory getEntityManagerFactory() {
-        if (entityManagerFactory == null) {
-            try {
-                Map<String, String> properties = new HashMap<>();
-                properties.put("javax.persistence.jdbc.url", "jdbc:mysql://korzened.beget.tech:3306/korzened_kata?useSSL=false");
-                properties.put("javax.persistence.jdbc.user", "korzened_kata");
-                properties.put("javax.persistence.jdbc.password", "Q1S2C3q1w2e3r4t5y6");
-                properties.put("javax.persistence.jdbc.driver", "com.mysql.cj.jdbc.Driver");
-                properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-                properties.put("hibernate.show_sql", "true");
-                properties.put("hibernate.hbm2ddl.auto", "update");
-
-                entityManagerFactory = Persistence.createEntityManagerFactory("default", properties);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new ExceptionInInitializerError("EntityManagerFactory initialization failed." + e);
-            }
-        }
-        return entityManagerFactory;
+    @Autowired
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
-    public static void close() {
-        if (entityManagerFactory != null) {
-            entityManagerFactory.close();
-        }
+    private Properties hibernateProperties() {
+        Properties properties = new Properties();
+        properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
+        properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
+        return properties;
+    }
+
+    @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(environment.getRequiredProperty("db.driver"));
+        dataSource.setUrl(environment.getRequiredProperty("db.url"));
+        dataSource.setUsername(environment.getRequiredProperty("db.username"));
+        dataSource.setPassword(environment.getRequiredProperty("db.password"));
+        return dataSource;
+    }
+
+    @Bean
+    public LocalSessionFactoryBean sessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource());
+        sessionFactory.setPackagesToScan("web.user");
+        sessionFactory.setHibernateProperties(hibernateProperties());
+        return sessionFactory;
+    }
+
+    @Bean
+    public HibernateTransactionManager transactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(sessionFactory().getObject());
+        return transactionManager;
     }
 }
