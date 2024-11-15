@@ -1,10 +1,11 @@
 package web.services;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import web.user.*;
 
 import java.util.List;
 
+@Component
 public class Services {
 
     private final UserDAO userDao;
