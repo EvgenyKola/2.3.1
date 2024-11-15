@@ -14,7 +14,6 @@ public class UserDAOImpl implements UserDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-
     @Transactional
     public List<User> getAllUsers() {
         return entityManager.createQuery("SELECT user FROM User user", User.class).getResultList();
@@ -25,7 +24,6 @@ public class UserDAOImpl implements UserDAO {
         return entityManager.createQuery("DELETE FROM User user WHERE user.id = :userId")
                 .setParameter("userId", userId)
                 .executeUpdate();
-
     }
 
     @Transactional

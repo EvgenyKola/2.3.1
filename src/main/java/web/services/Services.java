@@ -5,7 +5,6 @@ import web.user.*;
 
 import java.util.List;
 
-@Repository
 public class Services {
 
     private final UserDAO userDao;

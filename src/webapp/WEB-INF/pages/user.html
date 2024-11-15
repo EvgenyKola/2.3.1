@@ -26,11 +26,12 @@
         <td th:text="${user.lastName}"></td>
         <td th:text="${user.age}"></td>
         <td><a th:href="@{/edit(id=${user.id})}">Edit</a></td>
+        <td><a th:href="@{/delete(id=${user.id})}">Delete</a></td>
     </tr>
     </tbody>
 </table>
 
-
+<button type="button" style="padding: 5px;" onclick='window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname + "create";'>Создать пользователя</button>
 <p th:text="${message}"></p>
 
 </body>
